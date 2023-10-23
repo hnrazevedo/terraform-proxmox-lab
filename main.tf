@@ -4,7 +4,8 @@ variable "pm_auth_password" {}
 variable "pm_log_enable" {}
 variable "pm_log_file" {}
 variable "pm_debug" {}
-variable "num_vm_instances" {}
+variable "masters_instances" {}
+variable "nodes_instances" {}
 
 terraform {
     required_providers {
@@ -29,16 +30,34 @@ provider "proxmox" {
     }
 }
 
-resource "proxmox_vm_qemu" "cluster" {
-    count = var.num_vm_instances
+resource "proxmox_vm_qemu" "masters" {
+    count = var.masters_instances
 
     os_type     = "cloud-init"
+    memory      = 6144
+    cores       = 3
+    sockets     = 2
+    name        = "master-${count.index}"
+    target_node = "pve"
+    clone       = "debian-cloud"
+    full_clone  = true
+    ipconfig0   = "ip=192.168.100.10${count.index}/24,gw=192.168.100.1"
+}
+
+resource "proxmox_vm_qemu" "nodes" {
+    count = var.nodes_instances
+
+    os_type     = "cloud-init"
+    memory      = 6144
+    cores       = 3
+    sockets     = 2
     name        = "node-${count.index}"
     target_node = "pve"
-
+    clone       = "debian-cloud"
+    full_clone  = true
     ipconfig0   = "ip=192.168.100.20${count.index}/24,gw=192.168.100.1"
 
-    clone       = "debian-12-cloud-init"
-    full_clone  = true
-
+    provisioner "local-exec" {
+        command = "echo ${self.ipconfig0} >> nodes_ips.txt"
+    }
 }
