@@ -1,0 +1,6 @@
+- name: Install k8s and docker packages
+  become: yes
+  hosts: k8s_hosts
+  roles:
+    - docker
+    - k8s-all

@@ -56,8 +56,4 @@ resource "proxmox_vm_qemu" "nodes" {
     clone       = "debian-cloud"
     full_clone  = true
     ipconfig0   = "ip=192.168.100.20${count.index}/24,gw=192.168.100.1"
-
-    provisioner "local-exec" {
-        command = "echo ${self.ipconfig0} >> nodes_ips.txt"
-    }
 }
