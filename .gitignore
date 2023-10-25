@@ -4,3 +4,4 @@
 terraform.tfstate.backup
 terraform.tfstate
 *.log
+/ansible/join/

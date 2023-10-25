@@ -4,3 +4,9 @@
   roles:
     - docker
     - k8s-all
+
+- name: Setup master node
+  become: yes
+  hosts: k8s_master
+  roles:
+    - k8s-master

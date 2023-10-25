@@ -27,4 +27,6 @@
   become: no
 
 - name: Install pod network
-  command: kubectl apply -f 
+  command: kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/tigera-operator.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
