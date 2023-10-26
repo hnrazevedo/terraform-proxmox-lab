@@ -8,10 +8,12 @@ variable "master_instances" {}
 variable "master_cores" {}
 variable "master_cpus" {}
 variable "master_memory" {}
+variable "master_pvehost" {}
 variable "worker_instances" {}
 variable "worker_cores" {}
 variable "worker_cpus" {}
 variable "worker_memory" {}
+variable "worker_pvehost" {}
 
 terraform {
     required_providers {
@@ -44,7 +46,7 @@ resource "proxmox_vm_qemu" "masters" {
     cores       = var.master_cores
     sockets     = var.master_cpus
     name        = "master-${count.index}"
-    target_node = "pve"
+    target_node = var.master_pvehost
     clone       = "debian-cloud"
     full_clone  = true
     ipconfig0   = "ip=192.168.100.10${count.index}/24,gw=192.168.100.1"
@@ -57,8 +59,8 @@ resource "proxmox_vm_qemu" "nodes" {
     memory      = var.worker_memory
     cores       = var.worker_cores
     sockets     = var.worker_cpus
-    name        = "node-${count.index}"
-    target_node = "pve"
+    name        = "worker-${count.index}"
+    target_node = var.worker_pvehost
     clone       = "debian-cloud"
     full_clone  = true
     ipconfig0   = "ip=192.168.100.20${count.index}/24,gw=192.168.100.1"
