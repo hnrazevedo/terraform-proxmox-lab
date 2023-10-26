@@ -23,7 +23,7 @@ No servidor PVE, baixe uma imagem cloud da distribuição desejada, exemplo Debi
 # apt install libguestfs-tools -y
 # virt-customize --add debian-12-generic-amd64.qcow2 --install qemu-guest-agent
 # qm create 9000 --name debian-cloud --ostype l26 --cpu cputype=host --net0 virtio,bridge=vmbr0
-# qm set 9000 --scsi0 local-lvm:0,import-from=/tmp/debian-12-generic-amd64.qcow2 local-lvm
+# qm set 9000 --scsi0 local-lvm:0,import-from=/tmp/debian-12-generic-amd64.qcow2
 # rm -rf debian-12-generic-amd64.qcow2
 # qm set 9000 --ide2 local-lvm:cloudinit
 # qm set 9000 --boot c --bootdisk scsi0
