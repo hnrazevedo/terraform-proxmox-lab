@@ -16,15 +16,14 @@ Crie e atribua a função `TerraformProv` ao usuário criado
 
 ## Preparando Template para nodes
 
-No servidor PVE, baixe uma imagem cloud da distribuição desejada, exemplo Debian e configure uma VM, definindo a quantidade memória, cpus e cores para gerar o Template
+No servidor PVE, baixe uma imagem cloud da distribuição desejada, exemplo Debian e configure uma VM para gerar o Template
 ```sh
 # cd /tmp
 # wget https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2
 # apt install libguestfs-tools -y
 # virt-customize --add debian-12-generic-amd64.qcow2 --install qemu-guest-agent
-# qm create 9000 --name debian-12-cloud-init --numa 0 --ostype l26 --cpu cputype=host --cores 3 --sockets 2 --memory 6144 --net0 virtio,bridge=vmbr0
-# qm importdisk 9000 /tmp/debian-12-generic-amd64.qcow2 local-lvm
-# qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
+# qm create 9000 --name debian-cloud --ostype l26 --cpu cputype=host --net0 virtio,bridge=vmbr0
+# qm set 9000 --scsi0 local-lvm:0,import-from=/tmp/debian-12-generic-amd64.qcow2 local-lvm
 # qm set 9000 --ide2 local-lvm:cloudinit
 # qm set 9000 --boot c --bootdisk scsi0
 # qm set 9000 --serial0 socket --vga serial0
