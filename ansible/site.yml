@@ -10,3 +10,9 @@
   hosts: k8s_master
   roles:
     - k8s-master
+
+- name: Setup worket node
+  become: yes
+  hosts: k8s_worker
+  roles:
+    - k8s-worker

@@ -25,3 +25,12 @@
   with_items:
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
+
+- name: Generate defauls config containerd
+  command: containerd config default | tee /etc/containerd/config.toml
+
+- name: Enable systemd cgroup support
+  command: sed -e "s/SystemdCgroup = false/SystemdCgroup = true/g" -i /etc/containerd/config.toml
+
+- name: Restart containerd
+  command: systemctl restart containerd
