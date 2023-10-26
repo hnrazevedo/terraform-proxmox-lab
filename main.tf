@@ -4,8 +4,14 @@ variable "pm_auth_password" {}
 variable "pm_log_enable" {}
 variable "pm_log_file" {}
 variable "pm_debug" {}
-variable "masters_instances" {}
-variable "nodes_instances" {}
+variable "master_instances" {}
+variable "master_cores" {}
+variable "master_cpus" {}
+variable "master_memory" {}
+variable "worker_instances" {}
+variable "worker_cores" {}
+variable "worker_cpus" {}
+variable "worker_memory" {}
 
 terraform {
     required_providers {
@@ -31,12 +37,12 @@ provider "proxmox" {
 }
 
 resource "proxmox_vm_qemu" "masters" {
-    count = var.masters_instances
+    count = var.master_instances
 
     os_type     = "cloud-init"
-    memory      = 6144
-    cores       = 3
-    sockets     = 2
+    memory      = var.master_memory
+    cores       = var.master_cores
+    sockets     = var.master_cpus
     name        = "master-${count.index}"
     target_node = "pve"
     clone       = "debian-cloud"
@@ -45,12 +51,12 @@ resource "proxmox_vm_qemu" "masters" {
 }
 
 resource "proxmox_vm_qemu" "nodes" {
-    count = var.nodes_instances
+    count = var.worker_instances
 
     os_type     = "cloud-init"
-    memory      = 6144
-    cores       = 3
-    sockets     = 2
+    memory      = var.worker_memory
+    cores       = var.worker_cores
+    sockets     = var.worker_cpus
     name        = "node-${count.index}"
     target_node = "pve"
     clone       = "debian-cloud"
