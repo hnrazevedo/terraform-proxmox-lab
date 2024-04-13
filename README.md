@@ -19,24 +19,24 @@ Crie e atribua a função `TerraformProv` ao usuário criado
 No servidor PVE, baixe uma imagem cloud da distribuição desejada, exemplo Debian e configure uma VM para gerar o Template
 ```sh
 # cd /tmp
-# wget https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-generic-amd64.qcow2
+# wget https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
 # apt install libguestfs-tools -y
-# virt-customize --add debian-12-generic-amd64.qcow2 --install qemu-guest-agent
-# qm create 9000 --name debian-cloud --ostype l26 --cpu cputype=host --net0 virtio,bridge=vmbr0
-# qm set 9000 --scsi0 local-lvm:0,import-from=/tmp/debian-12-generic-amd64.qcow2
-# rm -rf debian-12-generic-amd64.qcow2
+# virt-customize --add Rocky-9-GenericCloud.latest.x86_64.qcow2 --install qemu-guest-agent
+# qm create 9000 --name rocky9-cloud --ostype l26 --cpu cputype=host --net0 virtio,bridge=vmbr0
+# qm importdisk 9000 Rocky-9-GenericCloud.latest.x86_64.qcow2 local-lvm
+# qm set 9000 --scsihw virtio-scsi-pci --scsi0 local-lvm:vm-9000-disk-0
+# rm -rf Rocky-9-GenericCloud.latest.x86_64.qcow2
 # qm set 9000 --ide2 local-lvm:cloudinit
 # qm set 9000 --boot c --bootdisk scsi0
 # qm set 9000 --serial0 socket --vga serial0
 # qm set 9000 --agent enabled=1
-# qm disk resize 9000 scsi0 +100G
 # qm template 9000
 ```
 
 Defina um usuário e senha para autênticação e configure a chave SSH da máquina host no Cloud-init do template criado no Proxmox
 ```sh
-# qm set 9000 --ciuser debian
-# qm set 9000 --cipassword debian
+# qm set 9000 --ciuser rocky
+# qm set 9000 --cipassword rocky
 # qm set 9000 --sshkey ~/.ssh/id_rsa.pub
 ```
 
